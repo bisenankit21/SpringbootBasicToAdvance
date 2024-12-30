@@ -1,17 +1,24 @@
 package com.ankit;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.ankit.beans.Vehicle;
+import com.ankit.config.ProjectConfig;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Vehicle vehicle =  new Vehicle();
+        vehicle.setName("Car");
+        System.out.println("Vehicle name"+vehicle.getName());
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+
+        var context = new AnnotationConfigApplicationContext(ProjectConfig.class);
+        Vehicle vehicle1 = context.getBean(Vehicle.class);
+        System.out.println("Vehicle name from Spring context is:"+vehicle1.getName());
+
+        String hello = context.getBean(String.class);
+        System.out.println("String value from Spring context is: -"+hello);
+
+        Integer number = context.getBean(Integer.class);
+        System.out.println("Integer value from Spring context is:"+number);
     }
 }
