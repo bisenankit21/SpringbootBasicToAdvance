@@ -1,5 +1,7 @@
 package com.example.beans;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class Vehicle {
 
     private String name;
