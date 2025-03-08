@@ -2,7 +2,6 @@ package com.eazybytes.eazyschool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +24,7 @@ public class ProjectSecurityConfig {
                 /about*/
 
         //Permit all requests inside the web application
-        http.csrf((csrf) -> csrf.disable())
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg") )
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/home").permitAll()
                         .requestMatchers("/dashboard").authenticated()
@@ -35,7 +34,8 @@ public class ProjectSecurityConfig {
                 .requestMatchers("/courses").permitAll()
                 .requestMatchers("/about").permitAll()
                 .requestMatchers("/assets/**").permitAll()
-                        .requestMatchers("/login").permitAll())
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll())
                 .formLogin((form) -> form.loginPage("/login")
                         .defaultSuccessUrl("/dashboard")
                         .failureUrl("/login?error=true")
