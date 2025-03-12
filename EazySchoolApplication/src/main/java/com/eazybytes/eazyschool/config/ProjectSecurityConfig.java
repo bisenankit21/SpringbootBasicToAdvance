@@ -1,14 +1,14 @@
 package com.eazybytes.eazyschool.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class ProjectSecurityConfig {
@@ -16,47 +16,36 @@ public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
-  /*            /home
-                /holidays
-                /contact
-                /saveMsg
-                /courses
-                /about*/
-
-        //Permit all requests inside the web application
-        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg") )
-                .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/home").permitAll()
-                        .requestMatchers("/dashboard").authenticated()
-                .requestMatchers("/holidays/**").permitAll()
-                .requestMatchers("/contact").permitAll()
-                .requestMatchers("/saveMsg").permitAll()
-                .requestMatchers("/courses").permitAll()
-                .requestMatchers("/about").permitAll()
-                .requestMatchers("/assets/**").permitAll()
+        http.csrf((csrf) -> csrf.ignoringRequestMatchers("/saveMsg").ignoringRequestMatchers(PathRequest.toH2Console()))
+                .authorizeHttpRequests((requests) -> requests.requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("/closeMsg/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/holidays/**").permitAll()
+                        .requestMatchers("/contact").permitAll()
+                        .requestMatchers("/saveMsg").permitAll()
+                        .requestMatchers("/courses").permitAll()
+                        .requestMatchers("/about").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/logout").permitAll())
-                .formLogin((form) -> form.loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout((logout) -> logout.logoutSuccessUrl("/login?logout=true")
+                        .requestMatchers("/logout").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll())
+                .formLogin(loginConfigurer -> loginConfigurer.loginPage("/login")
+                        .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true").permitAll())
+                .logout(logoutConfigurer -> logoutConfigurer.logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true).permitAll())
-                .httpBasic(withDefaults());
-        //http.formLogin().loginPage("/login").loginProcessingUrl("/login");
-        //http.httpBasic();
+                .httpBasic(Customizer.withDefaults());
 
+        http.headers(headersConfigurer -> headersConfigurer
+                .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()));
 
-        //Deny all requests inside the web application
-//        http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
-//        http.formLogin(withDefaults());
-//        http.httpBasic(withDefaults());
         return http.build();
+
     }
 
-    // if we want to store the users in In-memory of the application
     @Bean
-    public InMemoryUserDetailsManager userDealsService() {
+    public InMemoryUserDetailsManager userDetailsService() {
+
         UserDetails user = User.withDefaultPasswordEncoder()
                 .username("user")
                 .password("12345")
@@ -65,8 +54,9 @@ public class ProjectSecurityConfig {
         UserDetails admin = User.withDefaultPasswordEncoder()
                 .username("admin")
                 .password("54321")
-                .roles("USER","ADMIN")
+                .roles("ADMIN")
                 .build();
-        return new InMemoryUserDetailsManager(user,admin);
+        return new InMemoryUserDetailsManager(user, admin);
     }
+
 }
