@@ -2,8 +2,9 @@ package com.eazybytes.eazyschool.repository;
 
 import com.eazybytes.eazyschool.model.Contact;
 //import com.eazybytes.eazyschool.rommappers.ContactRowMapper;
-import com.eazybytes.eazyschool.rommappers.ContactRowMapper;
+//import com.eazybytes.eazyschool.rommappers.ContactRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.stereotype.Repository;
@@ -20,9 +21,11 @@ type to the Spring context and indicate that given Bean is used to perform
 DB related operations and
 * */
 @Repository
-public class ContactRepository {
+public interface ContactRepository extends CrudRepository<Contact,Integer> {
 
-    private final JdbcTemplate jdbcTemplate;
+    List<Contact> findByStatus(String status);
+
+   /* private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public ContactRepository(JdbcTemplate jdbcTemplate) {
@@ -56,6 +59,6 @@ public class ContactRepository {
                 preparedStatement.setInt(4, contactId);
             }
         });
-    }
+    }*/
 
 }

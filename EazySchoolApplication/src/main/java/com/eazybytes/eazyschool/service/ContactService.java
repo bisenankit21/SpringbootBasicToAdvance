@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /*
 @Slf4j, is a Lombok-provided annotation that will automatically generate an SLF4J
@@ -27,30 +28,39 @@ public class ContactService {
      * @param contact
      * @return boolean
      */
-    public boolean saveMessageDetails(Contact contact){
+    public boolean saveMessageDetails(Contact contact) {
         boolean isSaved = false;
         contact.setStatus(EazySchoolConstants.OPEN);
         contact.setCreatedBy(EazySchoolConstants.ANONYMOUS);
         contact.setCreatedAt(LocalDate.from(LocalDateTime.now()));
-        int result = contactRepository.saveContactMsg(contact);
-        if(result>0) {
-            isSaved = true;
+        Contact savedContact = contactRepository.save(contact);
+        if (null != savedContact && savedContact.getContactId() > 0) {
+            {
+                isSaved = true;
+            }
         }
-        return isSaved;
-    }
-
-    public List<Contact> findMsgsWithOpenStatus(){
-        List<Contact> contactMsgs = contactRepository.findMsgsWithStatus(EazySchoolConstants.OPEN);
-        return contactMsgs;
-    }
-
-    public boolean updateMsgStatus(int contactId, String updatedBy){
-        boolean isUpdated = false;
-        int result = contactRepository.updateMsgStatus(contactId,EazySchoolConstants.CLOSE, updatedBy);
-        if(result>0) {
-            isUpdated = true;
+            return isSaved;
         }
-        return isUpdated;
-    }
 
+
+        public List<Contact> findMsgsWithOpenStatus () {
+            List<Contact> contactMsgs = contactRepository.findByStatus(EazySchoolConstants.OPEN);
+            return contactMsgs;
+        }
+
+        public boolean updateMsgStatus( int contactId, String updatedBy){
+            boolean isUpdated = false;
+            Optional<Contact> contact = contactRepository.findById(contactId);
+            if (contact.isPresent()) {
+                Contact contactObj = contact.get();
+                contactObj.setStatus(EazySchoolConstants.CLOSE);
+                contactObj.setUpdatedBy(updatedBy);
+                contactObj.setUpdatedAt(LocalDate.from(LocalDateTime.now()));
+                Contact updatedContact = contactRepository.save(contactObj);
+                if (null != updatedContact && updatedContact.getContactId() > 0) {
+                    isUpdated = true;
+                }
+            }
+            return isUpdated;
+     }
 }

@@ -2,8 +2,9 @@ package com.eazybytes.eazyschool.repository;
 
 import com.eazybytes.eazyschool.model.Contact;
 import com.eazybytes.eazyschool.model.Holiday;
-import com.eazybytes.eazyschool.rommappers.ContactRowMapper;
+//import com.eazybytes.eazyschool.rommappers.ContactRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -21,9 +22,9 @@ type to the Spring context and indicate that given Bean is used to perform
 DB related operations and
 * */
 @Repository
-public class HolidaysRepository {
+public interface HolidaysRepository extends CrudRepository<Holiday, Integer> {
 
-    private final JdbcTemplate jdbcTemplate;
+    /*private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public HolidaysRepository(JdbcTemplate jdbcTemplate) {
@@ -34,5 +35,5 @@ public class HolidaysRepository {
         String sql = "SELECT * FROM holidays";
         var rowMapper = BeanPropertyRowMapper.newInstance(Holiday.class);
         return jdbcTemplate.query(sql, rowMapper);
-    }
+    }*/
 }
