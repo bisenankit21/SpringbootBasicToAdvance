@@ -27,3 +27,8 @@ INSERT INTO `holidays` (`day`,`reason`,`type`,`created_at`, `created_by`)
 
   INSERT INTO `roles` (`role_name`,`created_at`, `created_by`)
     VALUES ('STUDENT',CURDATE(),'DBA');
+
+  DELETE FROM person where email='admin@eazyschool.com';
+
+  INSERT INTO `person` (`name`,`email`,`mobile_number`,`pwd`,`role_id`,`created_at`, `created_by`)
+    VALUES ('Admin','admin@eazyschool.com','3443434343','$2a$12$EDOVwJqzk3UK/JGldcdQYuOfNNaKkfPUnMxuVAWsvru7H.E8yA2vG', 1 ,CURDATE(),'DBA');
