@@ -1,5 +1,6 @@
 package com.eazybytes.eazyschool.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -18,17 +19,21 @@ import java.time.LocalDate;
 public class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
+    @JsonIgnore
     private LocalDate createdAt;
 
     @CreatedBy
     @Column(updatable = false)
+    @JsonIgnore
     private String createdBy;
 
     @LastModifiedDate
     @Column(insertable = false)
+    @JsonIgnore
     private LocalDate updatedAt;
 
     @LastModifiedBy
     @Column(insertable = false)
+    @JsonIgnore
     private String updatedBy;
 }
