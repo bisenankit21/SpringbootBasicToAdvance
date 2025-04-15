@@ -11,11 +11,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class ProjectConfiguration {
 
+//for Openfeing Method of consume API
     @Bean
     public BasicAuthRequestInterceptor basicAuthRequestInterceptor() {
         return new BasicAuthRequestInterceptor("admin@eazyschool.com", "admin");
     }
 
+    //for restTemplate way of consume API
     @Bean
     public RestTemplate restTemplate() {
         RestTemplateBuilder restTemplateBuilder =
@@ -23,7 +25,7 @@ public class ProjectConfiguration {
         return restTemplateBuilder.basicAuthentication
                 ("admin@eazyschool.com", "admin").build();
     }
-
+//consume service using Webclient
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
